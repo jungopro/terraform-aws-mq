@@ -1,0 +1,74 @@
+name: Build-$(Build.BuildId)
+
+trigger: none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+- group: Terraform
+
+steps:
+- task: TerraformInstaller@0
+  displayName: 'Install Terraform version $(TF-Version)'
+  inputs:
+    terraformVersion: '$(TF-Version)'
+- script: terraform init -get=true -upgrade=true
+  workingDirectory: '$(Build.SourcesDirectory)'
+  displayName: 'Terraform Init'
+  env:
+    AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+    AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+    AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
+- script: 'terraform validate'
+  workingDirectory: '$(Build.SourcesDirectory)'
+  displayName: 'Validate Terraform Code'
+  env:
+    AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+    AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+    AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
+- script: 'terraform plan -var=resource_group_location=$(location) -var=resource_group_name=$(resource-group) -var=create_resource_group=true'
+  workingDirectory: '$(Build.SourcesDirectory)'
+  displayName: 'Terraform Dry Run (Plan)'
+  env:
+    AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+    AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+    AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
+- script: 'terraform apply -var=resource_group_location=$(location) -var=resource_group_name=$(resource-group) -var=create_resource_group=true -auto-approve'
+  workingDirectory: '$(Build.SourcesDirectory)'
+  displayName: 'Terraform Run (Apply)'
+  env:
+    AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+    AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+    AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
+- script: 'terraform destroy -var=resource_group_location=$(location) -var=resource_group_name=$(resource-group) -var=create_resource_group=true -auto-approve'
+  workingDirectory: '$(Build.SourcesDirectory)'
+  displayName: 'Terraform Destroy'
+  env:
+    AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+    AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+    AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: |
+     **/*
+     !.git/**/*
+     !.terraform/**/*
+     !*.tfstate
+     !*.tfstate.*
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    CleanTargetFolder: true
+    OverWrite: true
+- task: GitHubRelease@1
+  inputs:
+    gitHubConnection: 'github.com_jungopro'
+    repositoryName: '$(Build.Repository.Name)'
+    action: 'create'
+    target: '$(Build.SourceVersion)'
+    tagSource: 'userSpecifiedTag'
+    tag: '1.$(Build.BuildId).0'
+    releaseNotesSource: 'inline'
+    releaseNotesInline: 'Additional Notes'
+    changeLogCompareToRelease: 'lastFullRelease'
+    changeLogType: 'commitBased'
