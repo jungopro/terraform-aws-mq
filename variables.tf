@@ -63,3 +63,14 @@ variable "mq_password" {
   description = "(Required) The password of the user. It must be 12 to 250 characters long, at least 4 unique characters, and must not contain commas. if you wish to autogenerate, leave empty"
   default = ""
 }
+
+variable "subnet_ids" {
+  type        = list(string)
+  description = "List of VPC subnet IDs"
+}
+
+variable "security_groups" {
+  type        = list(string)
+  description = "List of security groups to be allowed to connect to the ActiveMQ instance"
+  default     = []
+}
