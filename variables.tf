@@ -43,11 +43,6 @@ variable "host_instance_type" {
   default = "mq.t2.micro"
 }
 
-variable "create_security_groups" {
-  description = "Should we create mq security group(s) or use a pre-existing one. If true, please provide input for var.vpc_id below. If false, please provide input for var.security_group_ids below"
-  default = true
-}
-
 variable "vpc_id" {
   description = "the vpc id"
   default = ""

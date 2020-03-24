@@ -4,27 +4,11 @@ provider "aws" {
 
 resource "aws_mq_configuration" "configuration" {
   count          = var.create_configuration ? 1 : 0
-  description    = " MQ Configuration"
+  description    = "MQ Configuration"
   name           = "mq-configuration"
   engine_type    = var.engine_type
   engine_version = var.engine_version
   data           = file(var.configuration_file)
-}
-
-resource "aws_security_group" "group" {
-  count       = var.create_security_groups ? 1 : 0
-  name        = "allow_all"
-  description = "Allow all"
-  vpc_id      = var.vpc_id
-}
-
-resource "aws_security_group_rule" "rule" {
-  type              = "ingress"
-  from_port         = 0
-  to_port           = 65535
-  protocol          = "tcp"
-  cidr_blocks       = ["10.0.0.0/16"]
-  security_group_id = element(aws_security_group.group.*.id, 0)
 }
 
 resource "random_password" "mq_password" {
@@ -51,7 +35,7 @@ resource "aws_mq_broker" "broker" {
   engine_type        = var.engine_type
   engine_version     = var.engine_version
   host_instance_type = var.host_instance_type
-  security_groups    = var.create_security_groups ? aws_security_group.group.*.id : var.security_group_ids
+  security_groups    = var.security_group_ids
 
   user {
     username = var.mq_username
