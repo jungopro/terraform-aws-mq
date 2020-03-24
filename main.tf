@@ -12,12 +12,13 @@ resource "aws_mq_configuration" "configuration" {
 }
 
 resource "random_password" "mq_password" {
-  length      = 16
-  special     = true
-  min_upper   = 1
-  min_lower   = 1
-  min_numeric = 1
-  min_special = 1
+  length           = 16
+  special          = true
+  min_upper        = 1
+  min_lower        = 1
+  min_numeric      = 1
+  min_special      = 1
+  override_special = "!@#$%&*()_=+[]{}<>:?"
 
   keepers = {
     broker_name = "mq-broker"
