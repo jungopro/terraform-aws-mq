@@ -31,7 +31,7 @@ resource "aws_mq_broker" "broker" {
   engine_type        = var.engine_type
   engine_version     = var.engine_version
   host_instance_type = var.host_instance_type
-  security_groups    = [join("", aws_security_group.default.*.id)]
+  security_groups    = [join("", aws_security_group.group.*.id)]
   subnet_ids         = var.subnet_ids
 
   configuration {
@@ -47,17 +47,17 @@ resource "aws_mq_broker" "broker" {
   }
 }
 
-resource "aws_security_group" "default" {
+resource "aws_security_group" "group" {
   vpc_id = var.vpc_id
-  name   = "sample-sg"
+  name   = var.security_group_name == "" ? "mq-broker-sec-group" : var.security_group_name
 }
 
-resource "aws_security_group_rule" "default" {
-  count                    = length(var.security_groups) > 0 ? length(var.security_groups) : 0
-  type                     = "ingress"
-  protocol                 = "tcp"
-  from_port                = "0"
-  to_port                  = "0"
-  source_security_group_id = element(var.security_groups, count.index)
-  security_group_id        = aws_security_group.default.id
+resource "aws_security_group_rule" "rule" {
+  for_each          = var.rules
+  type              = lookup(each.value, "type")
+  protocol          = lookup(each.value, "protocol")
+  from_port         = lookup(each.value, "from_port")
+  to_port           = lookup(each.value, "to_port")
+  cidr_blocks       = lookup(each.value, "cidr_blocks")
+  security_group_id = aws_security_group.group.id
 }
