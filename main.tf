@@ -34,7 +34,7 @@ resource "random_password" "mq_password" {
   min_numeric = 1
   min_special = 1
 
-  keepers {
+  keepers = {
     broker_name = "mq-broker"
   }
 }
