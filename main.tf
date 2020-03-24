@@ -18,7 +18,7 @@ resource "random_password" "mq_password" {
   min_lower        = 1
   min_numeric      = 1
   min_special      = 1
-  override_special = "!@#$%&*()_=+[]{}<>:?"
+  override_special = "!@#$%&*()_+{}<>?"
 
   keepers = {
     broker_name = "mq-broker"
