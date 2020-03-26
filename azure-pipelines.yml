@@ -28,21 +28,21 @@ steps:
     AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
     AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
     AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
-- script: 'terraform plan -var=vpc_id=$(VPC_ID) -var=security_group_ids=$(SECURITY_GROUP_IDS) -var=subnet_ids=$(SUBNET_IDS)'
+- script: 'terraform plan -var vpc_id=$(VPC_ID) -var security_group_ids=$(SECURITY_GROUP_IDS) -var subnet_ids=$(SUBNET_IDS)'
   workingDirectory: '$(Build.SourcesDirectory)'
   displayName: 'Terraform Dry Run (Plan)'
   env:
     AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
     AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
     AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
-- script: 'terraform apply -var=vpc_id=$(VPC_ID) -var=security_group_ids=$(SECURITY_GROUP_IDS) -var=subnet_ids=$(SUBNET_IDS) -auto-approve'
+- script: 'terraform apply -var vpc_id=$(VPC_ID) -var security_group_ids=$(SECURITY_GROUP_IDS) -var subnet_ids=$(SUBNET_IDS) -auto-approve'
   workingDirectory: '$(Build.SourcesDirectory)'
   displayName: 'Terraform Run (Apply)'
   env:
     AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
     AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
     AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
-- script: 'terraform destroy -var=vpc_id=$(VPC_ID) -var=security_group_ids=$(SECURITY_GROUP_IDS) -var=subnet_ids=$(SUBNET_IDS) -auto-approve'
+- script: 'terraform destroy -var vpc_id=$(VPC_ID) -var security_group_ids=$(SECURITY_GROUP_IDS) -var subnet_ids=$(SUBNET_IDS) -auto-approve'
   workingDirectory: '$(Build.SourcesDirectory)'
   displayName: 'Terraform Destroy'
   env:
