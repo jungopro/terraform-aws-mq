@@ -1,7 +1,3 @@
-provider "aws" {
-  version = "~> 2.0"
-}
-
 resource "aws_mq_configuration" "configuration" {
   count          = var.create_configuration ? 1 : 0
   description    = "MQ Configuration"
