@@ -1,8 +1,3 @@
-locals {
-  security_groups = var.security_group_ids == [] ? aws_security_group.group.*.id : concat(aws_security_group.group.*.id, var.security_group_ids)
-}
-
-
 resource "aws_mq_configuration" "configuration" {
   count          = var.create_configuration ? 1 : 0
   description    = "MQ Configuration"
@@ -32,7 +27,7 @@ resource "aws_mq_broker" "broker" {
   engine_type        = var.engine_type
   engine_version     = var.engine_version
   host_instance_type = var.host_instance_type
-  security_groups    = [join("", local.security_groups)]
+  security_groups    = concat(aws_security_group.group.*.id, var.security_group_ids)
   subnet_ids         = var.subnet_ids
 
   configuration {
