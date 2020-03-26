@@ -21,14 +21,14 @@ steps:
     AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
     AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
     AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
-- script: 'terraform validate'
+- script: terraform validate
   workingDirectory: '$(Build.SourcesDirectory)'
   displayName: 'Validate Terraform Code'
   env:
     AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
     AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
     AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
-- script: 'terraform plan -var vpc_id=$(VPC_ID) -var security_group_ids=$(SECURITY_GROUP_IDS) -var subnet_ids=$(SUBNET_IDS)'
+- script: terraform plan -var 'vpc_id=$(VPC_ID)' -var 'security_group_ids=$(SECURITY_GROUP_IDS)' -var 'subnet_ids=$(SUBNET_IDS)'
   workingDirectory: '$(Build.SourcesDirectory)'
   displayName: 'Terraform Dry Run (Plan)'
   env:
