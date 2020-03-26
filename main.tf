@@ -4,7 +4,7 @@ resource "aws_mq_configuration" "configuration" {
   name           = "mq-configuration"
   engine_type    = var.engine_type
   engine_version = var.engine_version
-  data           = file(var.configuration_file)
+  data           = var.configuration_file != "config.xml" ? var.configuration_file : file("${path.root}/${var.configuration_file}")
 }
 
 resource "random_password" "mq_password" {
@@ -27,7 +27,7 @@ resource "aws_mq_broker" "broker" {
   engine_type        = var.engine_type
   engine_version     = var.engine_version
   host_instance_type = var.host_instance_type
-  security_groups    = [join("", aws_security_group.group.*.id)]
+  security_groups    = [join("", concat(aws_security_group.group.*.id, var.security_group_ids))]
   subnet_ids         = var.subnet_ids
 
   configuration {
