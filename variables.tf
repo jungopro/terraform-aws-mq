@@ -14,8 +14,8 @@ variable "create_configuration" {
 }
 
 variable "configuration_file" {
-  description = "path to a config file for the mq configuration"
-  default     = "./config.xml"
+  description = "path to a config file for the mq configuration. defaults to config.xml located in the root module folder"
+  default     = "config.xml"
 }
 
 variable "configuration_id" {
@@ -45,12 +45,11 @@ variable "host_instance_type" {
 
 variable "vpc_id" {
   description = "the vpc id"
-  default     = ""
 }
 
 variable "security_group_ids" {
   type        = list(string)
-  description = "(Required) The list of security group IDs assigned to the broker"
+  description = "The list of security group IDs assigned to the broker"
   default     = []
 }
 
@@ -83,15 +82,5 @@ variable "rules" {
     to_port     = string
     cidr_blocks = list(string)
   }))
-  default = {
-    allow_all_inbound = {
-      type        = "ingress"
-      protocol    = "tcp"
-      from_port   = "0"
-      to_port     = "0"
-      cidr_blocks = [
-        "0.0.0.0/0",
-      ]
-    }
-  }
+  default = {}
 }
